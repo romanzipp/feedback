@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+    environment:
+      - PORT=8080
+      - HOST=0.0.0.0
+      - ADMIN_TOKEN=${ADMIN_TOKEN:-change-me}
+      - SESSION_SECRET=${SESSION_SECRET:-change-me}
+      - DATA_DIR=/data
+      - MAX_UPLOAD_SIZE=52428800
+      - DB_PATH=/data/feedback.db
+    restart: unless-stopped
