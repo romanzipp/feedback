@@ -121,21 +121,24 @@ func (h *AdminHandler) UploadFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := r.ParseMultipartForm(50 << 20); err != nil {
+	if err := r.ParseMultipartForm(200 << 20); err != nil { // 200MB for multiple files
 		http.Error(w, "Failed to parse form", http.StatusBadRequest)
 		return
 	}
 
-	file, header, err := r.FormFile("file")
-	if err != nil {
-		http.Error(w, "No file uploaded", http.StatusBadRequest)
+	// Get all uploaded files
+	files := r.MultipartForm.File["files"]
+	if len(files) == 0 {
+		http.Error(w, "No files uploaded", http.StatusBadRequest)
 		return
 	}
-	defer file.Close()
 
-	if _, err := h.fileService.Save(shareID, header); err != nil {
-		http.Error(w, "Failed to save file", http.StatusInternalServerError)
-		return
+	// Save each file
+	for _, header := range files {
+		if _, err := h.fileService.Save(shareID, header); err != nil {
+			http.Error(w, "Failed to save file: "+header.Filename, http.StatusInternalServerError)
+			return
+		}
 	}
 
 	http.Redirect(w, r, "/admin/"+token+"/shares/"+strconv.Itoa(shareID), http.StatusSeeOther)

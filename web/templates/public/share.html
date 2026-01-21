@@ -33,12 +33,26 @@
     {{end}}
 
     {{if .Files}}
-    <div class="grid gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        {{range .Files}}
+        {{if and (ne .File.MimeType "") (hasPrefix .File.MimeType "image/")}}
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <img src="/files/{{.File.ID}}" alt="{{.File.Filename}}" class="w-full h-64 object-cover cursor-pointer hover:opacity-90" data-file-id="{{.File.ID}}" onclick="openModal({{.File.ID}})">
+            <div class="p-4">
+                <p class="text-sm text-gray-600 mb-2 truncate">{{.File.Filename}}</p>
+                <div class="text-sm text-gray-500">{{len .Comments}} comments</div>
+            </div>
+        </div>
+        {{end}}
+        {{end}}
+    </div>
+
+    <div class="space-y-8">
         {{range .Files}}
         <div class="bg-white border border-gray-200 rounded-lg p-6">
             <div class="mb-4">
                 {{if and (ne .File.MimeType "") (hasPrefix .File.MimeType "image/")}}
-                <img src="/files/{{.File.ID}}" alt="{{.File.Filename}}" class="max-w-full h-auto rounded cursor-pointer hover:opacity-90" data-file-id="{{.File.ID}}" onclick="openModal({{.File.ID}})">
+                <h3 class="font-semibold text-gray-900 mb-2">{{.File.Filename}}</h3>
                 {{else}}
                 <a href="/files/{{.File.ID}}" target="_blank" class="text-primary hover:underline text-lg font-medium">{{.File.Filename}}</a>
                 {{end}}
