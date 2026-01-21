@@ -42,6 +42,8 @@ func (h *FileHandler) Download(w http.ResponseWriter, r *http.Request) {
 	// Set headers
 	w.Header().Set("Content-Type", file.MimeType)
 	w.Header().Set("Content-Disposition", "inline; filename=\""+file.Filename+"\"")
+	// Cache for 1 year since file hash is immutable
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 
 	// Serve file
 	http.ServeContent(w, r, file.Filename, file.UploadedAt, f)
