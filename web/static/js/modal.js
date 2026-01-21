@@ -1,7 +1,7 @@
-window.openModal = function(fileId) {
+window.openModal = function(fileHash) {
     const modal = document.getElementById('modal');
     const modalImg = document.getElementById('modal-img');
-    modalImg.src = `/files/${fileId}`;
+    modalImg.src = `/files/${fileHash}`;
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     document.body.style.overflow = 'hidden';

@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 	"os"
-	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/romanzipp/feedback/internal/services"
@@ -20,13 +19,13 @@ func NewFileHandler(fileService *services.FileService) *FileHandler {
 }
 
 func (h *FileHandler) Download(w http.ResponseWriter, r *http.Request) {
-	fileID, err := strconv.Atoi(chi.URLParam(r, "id"))
-	if err != nil {
+	fileHash := chi.URLParam(r, "hash")
+	if fileHash == "" {
 		http.NotFound(w, r)
 		return
 	}
 
-	file, err := h.fileService.GetByID(fileID)
+	file, err := h.fileService.GetByHash(fileHash)
 	if err != nil {
 		http.NotFound(w, r)
 		return

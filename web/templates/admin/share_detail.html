@@ -49,7 +49,7 @@
                     <p class="text-sm text-gray-500">{{.SizeBytes}} bytes · {{.UploadedAt.Format "2006-01-02 15:04"}}</p>
                 </div>
                 <div class="flex gap-2">
-                    <a href="/files/{{.ID}}" class="text-primary hover:underline" target="_blank">View</a>
+                    <a href="/files/{{.Hash}}" class="text-primary hover:underline" target="_blank">View</a>
                     <form method="POST" action="/admin/{{$.Token}}/files/{{.ID}}/delete" class="inline">
                         <button type="submit" class="text-red-600 hover:underline" onclick="return confirm('Delete this file?')">Delete</button>
                     </form>

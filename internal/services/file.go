@@ -32,6 +32,12 @@ func (s *FileService) Save(shareID int, fileHeader *multipart.FileHeader) (*data
 	}
 	defer file.Close()
 
+	// Generate random hash for file access
+	fileHash, err := GenerateHash(16)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate file hash: %w", err)
+	}
+
 	// Generate unique filename
 	fileID := uuid.New().String()
 	storageName := fmt.Sprintf("%s_%s", fileID, fileHeader.Filename)
@@ -66,8 +72,8 @@ func (s *FileService) Save(shareID int, fileHeader *multipart.FileHeader) (*data
 
 	// Save to database
 	result, err := s.db.Exec(
-		"INSERT INTO files (share_id, filename, storage_path, mime_type, size_bytes) VALUES (?, ?, ?, ?, ?)",
-		shareID, fileHeader.Filename, storagePath, mimeType, size,
+		"INSERT INTO files (share_id, hash, filename, storage_path, mime_type, size_bytes) VALUES (?, ?, ?, ?, ?, ?)",
+		shareID, fileHash, fileHeader.Filename, storagePath, mimeType, size,
 	)
 	if err != nil {
 		// Clean up file if database insert fails
@@ -86,9 +92,21 @@ func (s *FileService) Save(shareID int, fileHeader *multipart.FileHeader) (*data
 func (s *FileService) GetByID(id int) (*database.File, error) {
 	file := &database.File{}
 	err := s.db.QueryRow(
-		"SELECT id, share_id, filename, storage_path, mime_type, size_bytes, uploaded_at FROM files WHERE id = ?",
+		"SELECT id, share_id, hash, filename, storage_path, mime_type, size_bytes, uploaded_at FROM files WHERE id = ?",
 		id,
-	).Scan(&file.ID, &file.ShareID, &file.Filename, &file.StoragePath, &file.MimeType, &file.SizeBytes, &file.UploadedAt)
+	).Scan(&file.ID, &file.ShareID, &file.Hash, &file.Filename, &file.StoragePath, &file.MimeType, &file.SizeBytes, &file.UploadedAt)
+	if err != nil {
+		return nil, err
+	}
+	return file, nil
+}
+
+func (s *FileService) GetByHash(hash string) (*database.File, error) {
+	file := &database.File{}
+	err := s.db.QueryRow(
+		"SELECT id, share_id, hash, filename, storage_path, mime_type, size_bytes, uploaded_at FROM files WHERE hash = ?",
+		hash,
+	).Scan(&file.ID, &file.ShareID, &file.Hash, &file.Filename, &file.StoragePath, &file.MimeType, &file.SizeBytes, &file.UploadedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +115,7 @@ func (s *FileService) GetByID(id int) (*database.File, error) {
 
 func (s *FileService) GetByShareID(shareID int) ([]database.File, error) {
 	rows, err := s.db.Query(
-		"SELECT id, share_id, filename, storage_path, mime_type, size_bytes, uploaded_at FROM files WHERE share_id = ? ORDER BY uploaded_at DESC",
+		"SELECT id, share_id, hash, filename, storage_path, mime_type, size_bytes, uploaded_at FROM files WHERE share_id = ? ORDER BY uploaded_at DESC",
 		shareID,
 	)
 	if err != nil {
@@ -108,7 +126,7 @@ func (s *FileService) GetByShareID(shareID int) ([]database.File, error) {
 	var files []database.File
 	for rows.Next() {
 		var f database.File
-		err := rows.Scan(&f.ID, &f.ShareID, &f.Filename, &f.StoragePath, &f.MimeType, &f.SizeBytes, &f.UploadedAt)
+		err := rows.Scan(&f.ID, &f.ShareID, &f.Hash, &f.Filename, &f.StoragePath, &f.MimeType, &f.SizeBytes, &f.UploadedAt)
 		if err != nil {
 			return nil, err
 		}

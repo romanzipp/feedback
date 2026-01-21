@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/romanzipp/feedback/internal/middleware"
@@ -36,9 +35,16 @@ func (h *CommentHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fileID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	fileHash := chi.URLParam(r, "hash")
+	if fileHash == "" {
+		http.Error(w, "Invalid file hash", http.StatusBadRequest)
+		return
+	}
+
+	// Get file by hash to obtain ID
+	file, err := h.fileService.GetByHash(fileHash)
 	if err != nil {
-		http.Error(w, "Invalid file ID", http.StatusBadRequest)
+		http.Error(w, "File not found", http.StatusNotFound)
 		return
 	}
 
@@ -53,7 +59,7 @@ func (h *CommentHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comment, err := h.fileService.AddComment(fileID, username, content)
+	comment, err := h.fileService.AddComment(file.ID, username, content)
 	if err != nil {
 		http.Error(w, "Failed to add comment", http.StatusInternalServerError)
 		return

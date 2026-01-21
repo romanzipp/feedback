@@ -109,11 +109,11 @@ func main() {
 
 		r.Get("/share/{hash}", shareHandler.View)
 		r.Post("/share/{hash}/name", shareHandler.SetUsername)
-		r.Post("/api/files/{id}/comments", commentHandler.Create)
+		r.Post("/api/files/{hash}/comments", commentHandler.Create)
 	})
 
-	// File download (no auth needed if you have the ID)
-	r.Get("/files/{id}", fileHandler.Download)
+	// File download (no auth needed if you have the hash)
+	r.Get("/files/{hash}", fileHandler.Download)
 
 	// Admin routes
 	r.Route("/admin/{token}", func(r chi.Router) {

@@ -5,12 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const fileId = this.dataset.fileId;
+            const fileHash = this.dataset.fileHash;
             const content = this.querySelector('[name="content"]').value;
-            const commentsContainer = document.getElementById(`comments-${fileId}`);
+            const commentsContainer = document.getElementById(`comments-${fileHash}`);
 
             try {
-                const response = await fetch(`/api/files/${fileId}/comments`, {
+                const response = await fetch(`/api/files/${fileHash}/comments`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',

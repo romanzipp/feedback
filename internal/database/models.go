@@ -14,6 +14,7 @@ type Share struct {
 type File struct {
 	ID          int
 	ShareID     int
+	Hash        string
 	Filename    string
 	StoragePath string
 	MimeType    string

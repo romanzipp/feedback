@@ -40,6 +40,7 @@ func RunMigrations(db *sql.DB) error {
 		`CREATE TABLE IF NOT EXISTS files (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			share_id INTEGER NOT NULL,
+			hash TEXT NOT NULL UNIQUE,
 			filename TEXT NOT NULL,
 			storage_path TEXT NOT NULL,
 			mime_type TEXT NOT NULL,
@@ -48,6 +49,7 @@ func RunMigrations(db *sql.DB) error {
 			FOREIGN KEY (share_id) REFERENCES shares(id) ON DELETE CASCADE
 		)`,
 		`CREATE INDEX IF NOT EXISTS idx_files_share_id ON files(share_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_files_hash ON files(hash)`,
 		`CREATE TABLE IF NOT EXISTS comments (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			file_id INTEGER NOT NULL,
@@ -57,6 +59,9 @@ func RunMigrations(db *sql.DB) error {
 			FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE
 		)`,
 		`CREATE INDEX IF NOT EXISTS idx_comments_file_id ON comments(file_id)`,
+		// Migration: Add hash column to existing files table
+		`ALTER TABLE files ADD COLUMN hash TEXT`,
+		`CREATE UNIQUE INDEX IF NOT EXISTS idx_files_hash_unique ON files(hash) WHERE hash IS NOT NULL`,
 	}
 
 	for _, migration := range migrations {

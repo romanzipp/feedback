@@ -37,10 +37,10 @@
         {{range .Files}}
         <div class="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
             {{if and (ne .File.MimeType "") (hasPrefix .File.MimeType "image/")}}
-            <img src="/files/{{.File.ID}}" alt="{{.File.Filename}}" class="w-full cursor-pointer hover:opacity-90" data-file-id="{{.File.ID}}" onclick="openModal({{.File.ID}})" style="max-height: 300px; object-fit: contain; background: #f9fafb;">
+            <img src="/files/{{.File.Hash}}" alt="{{.File.Filename}}" class="w-full cursor-pointer hover:opacity-90" data-file-hash="{{.File.Hash}}" onclick="openModal('{{.File.Hash}}')" style="max-height: 300px; object-fit: contain; background: #f9fafb;">
             {{else}}
             <div class="p-4 bg-gray-100">
-                <a href="/files/{{.File.ID}}" target="_blank" class="text-primary hover:underline font-medium">{{.File.Filename}}</a>
+                <a href="/files/{{.File.Hash}}" target="_blank" class="text-primary hover:underline font-medium">{{.File.Filename}}</a>
             </div>
             {{end}}
 
@@ -49,7 +49,7 @@
 
                 <div class="border-t pt-2 flex-1 flex flex-col">
                     <p class="text-xs font-semibold text-gray-700 mb-2">Comments ({{len .Comments}})</p>
-                    <div id="comments-{{.File.ID}}" class="space-y-2 mb-2 overflow-y-auto max-h-32">
+                    <div id="comments-{{.File.Hash}}" class="space-y-2 mb-2 overflow-y-auto max-h-32">
                         {{range .Comments}}
                         <div class="bg-gray-50 rounded p-2">
                             <div class="flex items-baseline gap-1 mb-1">
@@ -62,7 +62,7 @@
                     </div>
 
                     {{if $.Username}}
-                    <form class="comment-form mt-auto" data-file-id="{{.File.ID}}">
+                    <form class="comment-form mt-auto" data-file-hash="{{.File.Hash}}">
                         <textarea name="content" required placeholder="Add comment..." rows="2"
                                   class="w-full text-xs px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary mb-1"></textarea>
                         <button type="submit" class="w-full bg-primary text-white text-xs px-2 py-1 rounded hover:bg-blue-600">
