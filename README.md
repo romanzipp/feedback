@@ -171,15 +171,16 @@ docker run -p 8080:8080 \
   ghcr.io/romanzipp/feedback:latest
 ```
 
-## Security
+## Where I (Claude) fucked up
 
-- Admin token is high-entropy random string
-- Session cookies are HMAC-signed
-- All SQL queries use parameterized statements
-- HTML templates auto-escape output
-- File paths validated to prevent directory traversal
-- Rate limiting on comment endpoints
-- Upload size limits enforced
+- **Template system disaster**: Created nested template structure that completely broke, causing admin panel to show "Enter Your Name" form. Had to rebuild all templates as self-contained files.
+- **Sequential file IDs**: Initially used `/files/3` allowing anyone to enumerate all files. Fixed by adding random hashes.
+- **URL-unsafe admin tokens**: Generated tokens with `/` characters causing 404s. Fixed by using URL-safe base64 encoding.
+- **Missing database directory**: SQLite failed to create DB file because parent directory wasn't created first.
+- **Destroyed image aspect ratios**: Used `object-cover` with fixed height, squashing images. Fixed with `object-fit: contain`.
+- **Inconsistent comment styling**: JavaScript-inserted comments had different font sizes than server-rendered ones.
+- **Go version mismatch**: Dockerfile used Go 1.22 when go.mod required 1.24+.
+- **Unwanted multi-arch builds**: Built for arm64 when only amd64 was requested.
 
 ## License
 
