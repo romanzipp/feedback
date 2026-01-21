@@ -26,13 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Add comment to UI
                 const commentDiv = document.createElement('div');
-                commentDiv.className = 'bg-gray-50 rounded p-3';
+                commentDiv.className = 'bg-gray-50 rounded p-2';
+                const commentDate = new Date(comment.CreatedAt);
                 commentDiv.innerHTML = `
-                    <div class="flex items-baseline gap-2 mb-1">
-                        <span class="font-medium text-gray-900">${escapeHtml(comment.Username)}</span>
-                        <span class="text-sm text-gray-500">${formatDate(comment.CreatedAt)}</span>
+                    <div class="flex items-baseline gap-1 mb-1">
+                        <span class="text-xs font-medium text-gray-900">${escapeHtml(comment.Username)}</span>
+                        <span class="text-xs text-gray-400 relative-time" data-time="${commentDate.toISOString()}">${getRelativeTime(commentDate)}</span>
                     </div>
-                    <p class="text-gray-700">${escapeHtml(comment.Content)}</p>
+                    <p class="text-xs text-gray-700">${escapeHtml(comment.Content)}</p>
                 `;
                 commentsContainer.appendChild(commentDiv);
 
@@ -53,13 +54,24 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+function getRelativeTime(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+
+    if (seconds < 60) return 'just now';
+    if (seconds < 3600) {
+        const mins = Math.floor(seconds / 60);
+        return mins + 'm ago';
+    }
+    if (seconds < 86400) {
+        const hours = Math.floor(seconds / 3600);
+        return hours + 'h ago';
+    }
+    if (seconds < 2592000) {
+        const days = Math.floor(seconds / 86400);
+        return days + 'd ago';
+    }
+
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return month + '/' + day;
 }

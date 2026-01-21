@@ -2,6 +2,9 @@
 
 File sharing and commenting application built with Go.
 
+> [!WARNING]
+> This project is a complete vibe-coded hellhole of garbage. Read code at your own caution. Redirect frustration at [Anthropic](https://support.claude.com/en/articles/9015913-how-to-get-support).
+
 ## Features
 
 - Admin panel for creating shares and uploading files
@@ -17,28 +20,33 @@ File sharing and commenting application built with Go.
 ### Local Development
 
 1. Install dependencies:
+
 ```bash
 go mod download
 npm install
 ```
 
-2. Create `.env` file:
+1. Create `.env` file:
+
 ```bash
 cp .env.example .env
 # Edit .env and set secure values for ADMIN_TOKEN and SESSION_SECRET
 ```
 
-3. Build Tailwind CSS:
+1. Build Tailwind CSS:
+
 ```bash
 npx tailwindcss -i web/static/css/input.css -o web/static/css/output.css --watch
 ```
 
-4. Run the application:
+1. Run the application:
+
 ```bash
 go run cmd/feedback/main.go
 ```
 
-5. Access admin panel:
+1. Access admin panel:
+
 ```
 http://localhost:8080/admin/{ADMIN_TOKEN}
 ```
@@ -46,6 +54,7 @@ http://localhost:8080/admin/{ADMIN_TOKEN}
 ### Docker
 
 Build and run with Docker:
+
 ```bash
 docker build -t feedback:latest .
 docker run -p 8080:8080 \
@@ -56,6 +65,7 @@ docker run -p 8080:8080 \
 ```
 
 Or use Docker Compose:
+
 ```bash
 # Create .env file with ADMIN_TOKEN and SESSION_SECRET
 docker-compose up
@@ -145,11 +155,13 @@ git push origin 1.0.0
 ```
 
 The GitHub Actions workflow will:
+
 - Build Docker image for amd64 and arm64
 - Push to `ghcr.io/romanzipp/feedback:{version}`
 - Tag as `latest`
 
 Pull and run:
+
 ```bash
 docker pull ghcr.io/romanzipp/feedback:latest
 docker run -p 8080:8080 \
