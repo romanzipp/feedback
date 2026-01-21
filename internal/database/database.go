@@ -59,9 +59,6 @@ func RunMigrations(db *sql.DB) error {
 			FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE
 		)`,
 		`CREATE INDEX IF NOT EXISTS idx_comments_file_id ON comments(file_id)`,
-		// Migration: Add hash column to existing files table
-		`ALTER TABLE files ADD COLUMN hash TEXT`,
-		`CREATE UNIQUE INDEX IF NOT EXISTS idx_files_hash_unique ON files(hash) WHERE hash IS NOT NULL`,
 	}
 
 	for _, migration := range migrations {
