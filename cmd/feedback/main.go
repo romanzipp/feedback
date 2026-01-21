@@ -67,11 +67,18 @@ func main() {
 			return len(s) >= len(prefix) && s[:len(prefix)] == prefix
 		},
 	}
-	tmpl := template.Must(template.New("").Funcs(funcMap).ParseGlob("web/templates/**/*.html"))
+
+	// Admin templates
+	adminTmpl := template.Must(template.New("").Funcs(funcMap).ParseGlob("web/templates/layouts/*.html"))
+	adminTmpl = template.Must(adminTmpl.ParseGlob("web/templates/admin/*.html"))
+
+	// Public templates
+	publicTmpl := template.Must(template.New("").Funcs(funcMap).ParseGlob("web/templates/layouts/*.html"))
+	publicTmpl = template.Must(publicTmpl.ParseGlob("web/templates/public/*.html"))
 
 	// Initialize handlers
-	adminHandler := handlers.NewAdminHandler(tmpl, shareService, fileService)
-	shareHandler := handlers.NewShareHandler(tmpl, shareService, fileService, store)
+	adminHandler := handlers.NewAdminHandler(adminTmpl, shareService, fileService)
+	shareHandler := handlers.NewShareHandler(publicTmpl, shareService, fileService, store)
 	fileHandler := handlers.NewFileHandler(fileService)
 	commentHandler := handlers.NewCommentHandler(fileService)
 

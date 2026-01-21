@@ -37,7 +37,7 @@ func (h *AdminHandler) Dashboard(w http.ResponseWriter, r *http.Request) {
 		"Shares": shares,
 	}
 
-	if err := h.templates.ExecuteTemplate(w, "admin/dashboard.html", data); err != nil {
+	if err := h.templates.ExecuteTemplate(w, "dashboard", data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -48,7 +48,7 @@ func (h *AdminHandler) NewShareForm(w http.ResponseWriter, r *http.Request) {
 		"Token": token,
 	}
 
-	if err := h.templates.ExecuteTemplate(w, "admin/share_form.html", data); err != nil {
+	if err := h.templates.ExecuteTemplate(w, "share_form", data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -108,7 +108,7 @@ func (h *AdminHandler) ShareDetail(w http.ResponseWriter, r *http.Request) {
 		"Files": files,
 	}
 
-	if err := h.templates.ExecuteTemplate(w, "admin/share_detail.html", data); err != nil {
+	if err := h.templates.ExecuteTemplate(w, "share_detail", data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

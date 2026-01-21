@@ -69,7 +69,7 @@ func (h *ShareHandler) View(w http.ResponseWriter, r *http.Request) {
 		"Hash":     hash,
 	}
 
-	if err := h.templates.ExecuteTemplate(w, "public/share.html", data); err != nil {
+	if err := h.templates.ExecuteTemplate(w, "share", data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

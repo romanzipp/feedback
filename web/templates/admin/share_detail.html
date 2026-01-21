@@ -1,8 +1,14 @@
-{{template "layouts/base.html" .}}
-
-{{define "title"}}{{.Share.Name}} - Admin{{end}}
-
-{{define "content"}}
+{{define "share_detail"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Share.Name}} - Admin</title>
+    <link rel="stylesheet" href="/static/css/output.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
 <div class="max-w-6xl mx-auto">
     <div class="mb-8">
         <a href="/admin/{{.Token}}" class="text-primary hover:underline">← Back to dashboard</a>
@@ -55,4 +61,7 @@
         {{end}}
     </div>
 </div>
+    </div>
+</body>
+</html>
 {{end}}

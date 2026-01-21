@@ -1,8 +1,14 @@
-{{template "layouts/base.html" .}}
-
-{{define "title"}}{{.Share.Name}}{{end}}
-
-{{define "content"}}
+{{define "share"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Share.Name}}</title>
+    <link rel="stylesheet" href="/static/css/output.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
 <div class="max-w-6xl mx-auto">
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900 mb-2">{{.Share.Name}}</h1>
@@ -31,16 +37,16 @@
         {{range .Files}}
         <div class="bg-white border border-gray-200 rounded-lg p-6">
             <div class="mb-4">
-                {{if and (ne .MimeType "") (hasPrefix .MimeType "image/")}}
-                <img src="/files/{{.ID}}" alt="{{.Filename}}" class="max-w-full h-auto rounded cursor-pointer hover:opacity-90" data-file-id="{{.ID}}" onclick="openModal({{.ID}})">
+                {{if and (ne .File.MimeType "") (hasPrefix .File.MimeType "image/")}}
+                <img src="/files/{{.File.ID}}" alt="{{.File.Filename}}" class="max-w-full h-auto rounded cursor-pointer hover:opacity-90" data-file-id="{{.File.ID}}" onclick="openModal({{.File.ID}})">
                 {{else}}
-                <a href="/files/{{.ID}}" target="_blank" class="text-primary hover:underline text-lg font-medium">{{.Filename}}</a>
+                <a href="/files/{{.File.ID}}" target="_blank" class="text-primary hover:underline text-lg font-medium">{{.File.Filename}}</a>
                 {{end}}
             </div>
 
             <div class="border-t pt-4">
                 <h3 class="font-semibold text-gray-900 mb-4">Comments</h3>
-                <div id="comments-{{.ID}}" class="space-y-3 mb-4">
+                <div id="comments-{{.File.ID}}" class="space-y-3 mb-4">
                     {{range .Comments}}
                     <div class="bg-gray-50 rounded p-3">
                         <div class="flex items-baseline gap-2 mb-1">
@@ -53,7 +59,7 @@
                 </div>
 
                 {{if $.Username}}
-                <form class="comment-form" data-file-id="{{.ID}}">
+                <form class="comment-form" data-file-id="{{.File.ID}}">
                     <textarea name="content" required placeholder="Add a comment..." rows="3"
                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary mb-2"></textarea>
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-blue-600">
@@ -75,14 +81,9 @@
         <img id="modal-img" src="" alt="" class="max-w-full max-h-screen object-contain">
     </div>
 </div>
-{{end}}
-
-{{define "scripts"}}
-<script src="/static/js/modal.js" type="module"></script>
-<script src="/static/js/comments.js" type="module"></script>
-<script>
-function hasPrefix(str, prefix) {
-    return str.indexOf(prefix) === 0;
-}
-</script>
+    </div>
+    <script src="/static/js/modal.js" type="module"></script>
+    <script src="/static/js/comments.js" type="module"></script>
+</body>
+</html>
 {{end}}

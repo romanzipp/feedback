@@ -1,8 +1,14 @@
-{{template "layouts/base.html" .}}
-
-{{define "title"}}Admin Dashboard{{end}}
-
-{{define "content"}}
+{{define "dashboard"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/css/output.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
 <div class="max-w-6xl mx-auto">
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold text-gray-900">Shares</h1>
@@ -47,4 +53,7 @@
     </div>
     {{end}}
 </div>
+    </div>
+</body>
+</html>
 {{end}}
