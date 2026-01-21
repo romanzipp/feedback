@@ -33,6 +33,12 @@ func main() {
 		log.Fatalf("Failed to create uploads directory: %v", err)
 	}
 
+	// Ensure database directory exists
+	dbDir := filepath.Dir(cfg.DBPath)
+	if err := os.MkdirAll(dbDir, 0755); err != nil {
+		log.Fatalf("Failed to create database directory: %v", err)
+	}
+
 	// Open database
 	db, err := database.Open(cfg.DBPath)
 	if err != nil {
